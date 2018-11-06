@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wang.ismy.oa.dao.UserInfoDao">
+    <resultMap id="UserInfoMap" type="wang.ismy.oa.entity.UserInfo">
+            <id property="userInfoId" column="user_info_id"/>
+            <result property="fullName" column="full_name"/>
+            <result property="userProfile" column="user_profile"/>
+            <result property="idNumber" column="id_number"/>
+            <result property="graduateSchool" column="graduate_school"/>
+            <result property="position" column="position"/>
+            <result property="currentSalary" column="current_salary"/>
+            <association property="leader" javaType="wang.ismy.oa.entity.User">
+                <id property="userId" column="leader"/>
+            </association>
+            <association property="department" javaType="wang.ismy.oa.entity.Department">
+                <id property="departmentId" column="department_id"/>
+                <result property="departmentName" column="department_name"/>
+                <result property="departmentDesc" column="department_desc"/>
+            </association>
+    </resultMap>
+
+    <select id="getUserInfoByUserId" resultMap="UserInfoMap" parameterType="int">
+        SELECT
+            tb_user.user_id,
+            tb_user_info.user_info_id,
+            tb_user_info.full_name,
+            tb_user_info.id_number,
+            tb_user_info.user_profile,
+            tb_user_info.graduate_school,
+            tb_user_info.position,
+            tb_user_info.current_salary,
+            tb_user_info.leader,
+            tb_department.department_id,
+            tb_department.department_name,
+            tb_department.department_desc
+        FROM tb_user,tb_user_info,tb_department
+        WHERE tb_user.user_id=#{userId}
+              AND tb_user.user_info=tb_user_info.user_info_id
+    </select>
+
+
+</mapper>

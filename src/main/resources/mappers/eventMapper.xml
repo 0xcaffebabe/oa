@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wang.ismy.oa.dao.EventDao">
+
+    <resultMap id="EventMap" type="wang.ismy.oa.entity.Event">
+        <id property="eventId" column="event_id"/>
+        <result property="eventName" column="event_name"/>
+        <result property="eventDesc" column="event_desc"/>
+        <result property="eventStartTime" column="event_start_time"/>
+        <result property="eventEndTime" column="event_end_time"/>
+        <result property="eventCreateTime" column="eventCreateTime"/>
+        <association property="eventUser" javaType="wang.ismy.oa.entity.User">
+            <id property="userId" column="user_id"/>
+        </association>
+    </resultMap>
+    <select id="getEventListByUserId" parameterType="int" resultMap="EventMap">
+        SELECT tb_event.event_id,
+            tb_event.event_name,
+            tb_event.event_desc,
+            tb_event.event_start_time,
+            tb_event.event_end_time,
+            tb_event.event_create_time,
+            tb_user.user_id
+        FROM tb_event,tb_user
+        WHERE tb_event.event_user=#{userId}
+        AND tb_user.user_id=#{userId}
+    </select>
+</mapper>

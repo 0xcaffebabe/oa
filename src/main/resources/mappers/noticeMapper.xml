@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="wang.ismy.oa.dao.NoticeDao">
+
+    <resultMap id="NoticeMap" type="wang.ismy.oa.entity.Notice">
+        <id property="noticeId" column="notice_id"/>
+        <result property="noticeTitle" column="notice_title"/>
+        <result property="noticeContent" column="notice_content"/>
+        <result property="onlyStaff" column="only_staff"/>
+        <result property="createTime" column="create_time"/>
+        <association property="noticeSender" javaType="wang.ismy.oa.entity.User">
+            <id property="userId" column="user_id"/>
+            <association property="userInfo" javaType="wang.ismy.oa.entity.UserInfo">
+                <result property="fullName" column="full_name"/>
+                <association property="department" javaType="wang.ismy.oa.entity.Department">
+                    <result property="departmentName" column="department_name"/>
+                </association>
+            </association>
+
+        </association>
+    </resultMap>
+
+    <select id="getNoticeListByLeaderId" parameterType="int" resultMap="NoticeMap">
+        SELECT tb_notice.notice_id,
+            tb_notice.notice_title,
+            tb_notice.notice_content,
+            tb_notice.only_staff,
+            tb_notice.create_time,
+            tb_user.user_id,
+            tb_user_info.full_name,
+            tb_department.department_name
+        FROM tb_notice,tb_user,tb_user_info,tb_department
+        WHERE (tb_notice.notice_sender=#{leaderId}
+                OR tb_notice.only_staff=0)
+              AND tb_notice.notice_sender=tb_user.user_id
+              AND tb_user.user_info=tb_user_info.user_info_id
+              AND tb_user_info.department=tb_department.department_id
+    </select>
+
+    <select id="getPublicNoticeList" resultMap="NoticeMap">
+        SELECT tb_notice.notice_id,
+            tb_notice.notice_title,
+            tb_notice.notice_content,
+            tb_notice.only_staff,
+            tb_notice.create_time,
+            tb_user.user_id,
+            tb_user_info.full_name,
+            tb_department.department_name
+        FROM tb_notice,tb_user,tb_user_info,tb_department
+        WHERE
+                tb_notice.only_staff=0)
+              AND tb_notice.notice_sender=tb_user.user_id
+              AND tb_user.user_info=tb_user_info.user_info_id
+              AND tb_user_info.department=tb_department.department_id
+    </select>
+
+</mapper>

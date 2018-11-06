@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="wang.ismy.oa.dao.CheckingDao">
+
+    <resultMap id="CheckingMap" type="wang.ismy.oa.entity.Checking">
+        <id property="checkingId" column="checking_id"/>
+        <result property="checkingDate" column="checking_date"/>
+        <result property="checkingType" column="checking_type"
+        typeHandler="wang.ismy.oa.dao.handler.CheckingTypeHandler"/>
+
+    </resultMap>
+
+    <insert id="addCheckingRecord" parameterType="int">
+        INSERT INTO tb_checking(checking_date, checking_type, checking_user, checking_create_time)
+                VALUES(NOW(),${checkingType.checkingType},
+                       ${checkingUser.userId},NOW())
+    </insert>
+
+    <select id="getTodayDutyStateByUserIdAndDutyState" resultType="boolean">
+        SELECT COUNT(tb_checking.checking_id) FROM tb_checking WHERE tb_checking.checking_user=#{userId}
+        AND DATE(tb_checking.checking_date)=DATE(NOW())
+            AND tb_checking.checking_type=${state.checkingType}
+    </select>
+
+    <select id="getRecentCheckingListByUserId" resultMap="CheckingMap" parameterType="int">
+        SELECT tb_checking.checking_id,
+            tb_checking.checking_type,
+            tb_checking.checking_date
+        FROM tb_checking WHERE checking_user=#{userId}
+        ORDER BY tb_checking.checking_create_time DESC LIMIT 6
+    </select>
+
+</mapper>
