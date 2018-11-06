@@ -9,7 +9,14 @@ public enum  DataDictionary {
     INVALID_CHECKING_TIME("无效的打卡时间"),
     CHECKING_SUCCESS("打卡成功"),
     CHECKING_FAIL("打卡失败"),
-    REPEAT_CHECKING("重复打卡");
+    REPEAT_CHECKING("重复打卡"),
+    START_OVER_END("起始时间大于结束时间"),
+    TIME_OVER("事件时间已是过去"),
+    TIME_EQUALS("起始时间相等"),
+    EVENT_NOT_EXIST("事件不存在"),
+    PERMISSION_DENIED("权限不足"),
+    DELETE_SUCCESS("删除成功"),
+    DELETE_FAIL("删除失败");
 
     private Object data;
 

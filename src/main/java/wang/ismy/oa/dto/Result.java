@@ -1,6 +1,7 @@
 package wang.ismy.oa.dto;
 
 import lombok.Data;
+import wang.ismy.oa.common.DataDictionary;
 import wang.ismy.oa.enums.ResultState;
 
 @Data
@@ -21,5 +22,7 @@ public class Result<T> {
         this.message=resultState.getMessage();
         this.data=data;
     }
+
+
 
 }

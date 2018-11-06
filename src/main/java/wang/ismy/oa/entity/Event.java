@@ -2,6 +2,7 @@ package wang.ismy.oa.entity;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -13,9 +14,9 @@ public class Event {
 
     private String eventDesc;
 
-    private Date eventStartTime;
+    private LocalDateTime eventStartTime;
 
-    private Date eventEndTime;
+    private LocalDateTime eventEndTime;
 
     private User eventUser;
 

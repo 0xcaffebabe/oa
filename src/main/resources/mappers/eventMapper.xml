@@ -13,19 +13,36 @@
         <result property="eventEndTime" column="event_end_time"/>
         <result property="eventCreateTime" column="eventCreateTime"/>
         <association property="eventUser" javaType="wang.ismy.oa.entity.User">
-            <id property="userId" column="user_id"/>
+            <id property="userId" column="event_user"/>
         </association>
     </resultMap>
-    <select id="getEventListByUserId" parameterType="int" resultMap="EventMap">
+    <sql id="head">
         SELECT tb_event.event_id,
             tb_event.event_name,
             tb_event.event_desc,
             tb_event.event_start_time,
             tb_event.event_end_time,
             tb_event.event_create_time,
-            tb_user.user_id
+            tb_event.event_user
         FROM tb_event,tb_user
+    </sql>
+    <select id="getEventListByUserId" parameterType="int" resultMap="EventMap">
+        <include refid="head"/>
         WHERE tb_event.event_user=#{userId}
         AND tb_user.user_id=#{userId}
     </select>
+
+    <insert id="saveEvent" parameterType="wang.ismy.oa.entity.Event">
+        INSERT INTO tb_event(event_name, event_desc, event_start_time, event_end_time, event_user)
+                VALUES(#{eventName},#{eventDesc},#{eventStartTime},#{eventEndTime},#{eventUser.userId})
+    </insert>
+
+    <select id="getEventById" parameterType="int" resultMap="EventMap">
+        <include refid="head"/>
+        WHERE tb_event.event_id=#{eventId}
+    </select>
+
+    <delete id="deleteEventById" parameterType="int">
+        DELETE FROM tb_event WHERE event_id=#{userId}
+    </delete>
 </mapper>
