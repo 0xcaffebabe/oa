@@ -7,4 +7,6 @@
 #
 包含考勤、公告、通信、下级管理四个模块
 #
+新用到的技术：1.mybatis 拦截器实现分页。2.mybatis typeHandler
+#
 前端：https://github.com/cjp715711877/oa-web
