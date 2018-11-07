@@ -16,7 +16,9 @@ public enum  DataDictionary {
     EVENT_NOT_EXIST("事件不存在"),
     PERMISSION_DENIED("权限不足"),
     DELETE_SUCCESS("删除成功"),
-    DELETE_FAIL("删除失败");
+    DELETE_FAIL("删除失败"),
+    UPDATE_SUCCESS("更新成功"),
+    UPDATE_FAIL("更新失败");
 
     private Object data;
 

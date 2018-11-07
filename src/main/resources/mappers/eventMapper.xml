@@ -45,4 +45,34 @@
     <delete id="deleteEventById" parameterType="int">
         DELETE FROM tb_event WHERE event_id=#{userId}
     </delete>
+
+    <select id="getEventListByPage" resultMap="EventMap">
+        SELECT tb_event.event_id,
+            tb_event.event_name,
+            tb_event.event_desc,
+            tb_event.event_start_time,
+            tb_event.event_end_time,
+            tb_event.event_create_time,
+            tb_event.event_user
+        FROM tb_event
+    </select>
+
+    <update id="updateEvent" parameterType="wang.ismy.oa.entity.Event">
+        UPDATE tb_event
+        <set>
+            <if test="eventName != null &amp;&amp;!&quot;&quot;.equals(eventName)">
+                event_name=#{eventName},
+            </if>
+            <if test="eventDesc != null &amp;&amp;!&quot;&quot;.equals(eventDesc)">
+                event_desc=#{eventDesc},
+            </if>
+            <if test="eventStartTime != null">
+                event_start_time=#{eventStartTime},
+            </if>
+            <if test="eventEndTime != null">
+                event_end_time=#{eventEndTime}
+            </if>
+        </set>
+        WHERE event_id=#{eventId}
+    </update>
 </mapper>

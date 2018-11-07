@@ -58,6 +58,18 @@ public class EventController {
 
     }
 
+    /*更新event web接口*/
+    @PostMapping("/{eventId}")
+    @LoginOnly
+    public Object updateEvent(@RequestBody @CustomValid EventDto eventDto,@PathVariable("eventId") Integer eventId){
+
+        if(eventService.updateEvent(eventDto,eventId) == 1){
+            return new Result<>(ResultState.SUCCESS,DataDictionary.UPDATE_SUCCESS);
+        }
+
+        return new Result<>(ResultState.SUCCESS,DataDictionary.UPDATE_FAIL);
+    }
+
     @DeleteMapping("/{eventId}")
     public Object deleteEventById(@PathVariable("eventId") Integer eventId){
 
