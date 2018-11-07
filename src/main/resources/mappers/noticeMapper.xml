@@ -21,8 +21,7 @@
 
         </association>
     </resultMap>
-
-    <select id="getNoticeListByLeaderId" parameterType="int" resultMap="NoticeMap">
+    <sql id="head">
         SELECT tb_notice.notice_id,
             tb_notice.notice_title,
             tb_notice.notice_content,
@@ -32,28 +31,30 @@
             tb_user_info.full_name,
             tb_department.department_name
         FROM tb_notice,tb_user,tb_user_info,tb_department
+    </sql>
+
+    <sql id="condition">
+        AND tb_notice.notice_sender=tb_user.user_id
+        AND tb_user.user_info=tb_user_info.user_info_id
+        AND tb_user_info.department=tb_department.department_id
+    </sql>
+    <select id="getNoticeListByLeaderId" parameterType="int" resultMap="NoticeMap">
+        <include refid="head"/>
         WHERE (tb_notice.notice_sender=#{leaderId}
                 OR tb_notice.only_staff=0)
-              AND tb_notice.notice_sender=tb_user.user_id
-              AND tb_user.user_info=tb_user_info.user_info_id
-              AND tb_user_info.department=tb_department.department_id
+        <include refid="condition"/>
     </select>
 
     <select id="getPublicNoticeList" resultMap="NoticeMap">
-        SELECT tb_notice.notice_id,
-            tb_notice.notice_title,
-            tb_notice.notice_content,
-            tb_notice.only_staff,
-            tb_notice.create_time,
-            tb_user.user_id,
-            tb_user_info.full_name,
-            tb_department.department_name
-        FROM tb_notice,tb_user,tb_user_info,tb_department
+        <include refid="head"/>
         WHERE
-                tb_notice.only_staff=0)
-              AND tb_notice.notice_sender=tb_user.user_id
-              AND tb_user.user_info=tb_user_info.user_info_id
-              AND tb_user_info.department=tb_department.department_id
+                tb_notice.only_staff=0
+              <include refid="condition"/>
     </select>
 
+    <select id="getNoticeListByUserIdByPage" resultMap="NoticeMap">
+        <include refid="head"/>
+        WHERE tb_notice.notice_sender=#{userId}
+        <include refid="condition"/>
+    </select>
 </mapper>

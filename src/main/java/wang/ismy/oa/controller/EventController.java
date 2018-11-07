@@ -37,9 +37,7 @@ public class EventController {
     @GetMapping("/{eventId}")
     @LoginOnly
     public Object getEventById(@PathVariable("eventId") Integer eventId){
-
         User user = userService.getCurrentUser();
-
         return new Result<>(ResultState.SUCCESS,eventService.getEventById(eventId,user));
     }
 

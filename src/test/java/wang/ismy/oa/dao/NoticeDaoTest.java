@@ -3,6 +3,7 @@ package wang.ismy.oa.dao;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import wang.ismy.oa.BaseTest;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.entity.Notice;
 
 import java.util.List;
@@ -19,5 +20,11 @@ public class NoticeDaoTest extends BaseTest {
         List<Notice> list=noticeDao.getNoticeListByLeaderId(1);
 
         System.err.println(list);
+    }
+
+    @Test
+    public void getNoticeListByUserIdByPage(){
+
+        assertEquals(2,noticeDao.getNoticeListByUserIdByPage(1,new Page(1,10)).size());
     }
 }

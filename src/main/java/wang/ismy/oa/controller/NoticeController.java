@@ -1,13 +1,11 @@
 package wang.ismy.oa.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import wang.ismy.oa.annotations.LoginOnly;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.dto.Result;
 import wang.ismy.oa.entity.User;
 import wang.ismy.oa.enums.ResultState;
@@ -36,5 +34,16 @@ public class NoticeController {
         User user=userService.getCurrentUser();
 
         return new Result<>(ResultState.SUCCESS,noticeService.getNoticeListByLeader(user.getUserInfo().getLeader()));
+    }
+
+    /*获取当前用户发布的所有公告*/
+    @GetMapping("/list")
+    @LoginOnly
+    public Object getOwnNotice(@RequestParam("page") Integer pageNumber,@RequestParam("length") Integer length){
+        Page page = new Page(pageNumber,length);
+
+        User user = userService.getCurrentUser();
+
+        return new Result<>(ResultState.SUCCESS,noticeService.getNoticeListByUserId(user.getUserId(),page));
     }
 }

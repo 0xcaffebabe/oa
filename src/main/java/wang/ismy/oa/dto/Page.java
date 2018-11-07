@@ -9,5 +9,11 @@ public class Page {
 
     private Integer length;
 
+    public Page(Integer pageNumber, Integer length) {
+        this.pageNumber = pageNumber;
+        this.length = length;
+    }
 
+    public Page() {
+    }
 }
