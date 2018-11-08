@@ -14,4 +14,15 @@ public interface NoticeDao {
 
     List<Notice> getNoticeListByUserIdByPage(@Param("userId") Integer userId, @Param("page")Page page);
 
+    int saveNotice(Notice notice);
+
+    Notice getNoticeByNoticeId(Integer noticeId);
+
+    int updateNotice(Notice notice);
+
+    int deleteNoticeByNoticeId(Integer noticeId);
+
+    List<Notice> searchNoticeListByPage(@Param("userId") Integer userId, @Param("keyword")
+            String keyword, @Param("page") Page page);
+
 }

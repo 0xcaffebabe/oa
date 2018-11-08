@@ -19,4 +19,23 @@ public class User {
 
     private Date lastEditTime;
 
+
+    @Override
+    public int hashCode(){
+        return userId;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if(object == null) return false;
+
+        if(! (object instanceof User)){
+            return false;
+        }
+
+        return this.hashCode() == object.hashCode();
+
+    }
+
+
 }

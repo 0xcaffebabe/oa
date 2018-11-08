@@ -18,7 +18,10 @@ public enum  DataDictionary {
     DELETE_SUCCESS("删除成功"),
     DELETE_FAIL("删除失败"),
     UPDATE_SUCCESS("更新成功"),
-    UPDATE_FAIL("更新失败");
+    UPDATE_FAIL("更新失败"),
+    SAVE_SUCCESS("保存成功"),
+    SAVE_FAIL("保存失败"),
+    PARAM_ERROR("参数错误");
 
     private Object data;
 

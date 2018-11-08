@@ -14,6 +14,7 @@ public class NoticeDaoTest extends BaseTest {
 
     @Autowired
     private NoticeDao noticeDao;
+
     @Test
     public void getNoticeListByLeaderId() {
 
@@ -26,5 +27,13 @@ public class NoticeDaoTest extends BaseTest {
     public void getNoticeListByUserIdByPage(){
 
         assertEquals(2,noticeDao.getNoticeListByUserIdByPage(1,new Page(1,10)).size());
+    }
+
+    /*
+    * admin
+    * */
+    @Test
+    public void search(){
+        assertEquals(2,noticeDao.searchNoticeListByPage(2,"廖师兄",new Page(1,10)));
     }
 }

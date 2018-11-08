@@ -18,6 +18,8 @@ public class EventServiceTest extends BaseTest {
 
         List<Event> list=eventService.getEventListByUserId(1);
 
-        System.err.println(list);
+        System.err.println("TEST");
     }
+
+
 }

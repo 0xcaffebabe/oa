@@ -44,7 +44,7 @@ public class SqlInterceptor implements Interceptor {
 
             // 改造后带分页查询的SQL语句
             String pageSql = sql + " LIMIT " + (page.getPageNumber()-1)*page.getLength() + "," + page.getLength();
-            logger.error("RET SQL:"+pageSql);
+
             metaObject.setValue("delegate.boundSql.sql", pageSql);
         }
         return invocation.proceed();

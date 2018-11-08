@@ -42,7 +42,9 @@
         <include refid="head"/>
         WHERE (tb_notice.notice_sender=#{leaderId}
                 OR tb_notice.only_staff=0)
+
         <include refid="condition"/>
+        ORDER BY tb_notice.last_edit_time DESC
     </select>
 
     <select id="getPublicNoticeList" resultMap="NoticeMap">
@@ -50,11 +52,59 @@
         WHERE
                 tb_notice.only_staff=0
               <include refid="condition"/>
+        ORDER BY tb_notice.last_edit_time DESC
     </select>
 
     <select id="getNoticeListByUserIdByPage" resultMap="NoticeMap">
         <include refid="head"/>
         WHERE tb_notice.notice_sender=#{userId}
         <include refid="condition"/>
+        ORDER BY tb_notice.last_edit_time DESC
     </select>
+
+    <select id="getNoticeByNoticeId" parameterType="int" resultMap="NoticeMap">
+        <include refid="head"/>
+        WHERE
+        tb_notice.notice_id=#{noticeId}
+        <include refid="condition"/>
+
+    </select>
+
+    <select id="searchNoticeListByPage" resultMap="NoticeMap">
+        <include refid="head"/>
+
+        WHERE
+          tb_notice.notice_sender=#{userId}
+          AND (
+              tb_notice.notice_title LIKE '%' #{keyword} '%' OR tb_notice.notice_content LIKE '%' #{keyword} '%'
+              )
+        <include refid="condition"/>
+    </select>
+    <insert id="saveNotice" parameterType="wang.ismy.oa.entity.Notice">
+        INSERT INTO tb_notice(notice_title, notice_content, notice_sender, only_staff)
+                VALUES (#{noticeTitle},#{noticeContent},#{noticeSender.userId},#{onlyStaff})
+
+    </insert>
+
+    <update id="updateNotice" parameterType="wang.ismy.oa.entity.Notice">
+        UPDATE tb_notice
+        <set>
+            <if test="noticeTitle!=null &amp;&amp;!&quot;&quot;.equals(noticeTitle)">
+                notice_title=#{noticeTitle},
+            </if>
+            <if test="noticeContent!=null &amp;&amp;!&quot;&quot;.equals(noticeContent)">
+                notice_content=#{noticeContent},
+            </if>
+            <if test="onlyStaff!=null">
+                only_staff=#{onlyStaff},
+            </if>
+            last_edit_time=now()
+        </set>
+        WHERE notice_id=#{noticeId}
+    </update>
+
+    <delete id="deleteNoticeByNoticeId" parameterType="int">
+        DELETE FROM tb_notice
+        WHERE notice_id=#{noticeId}
+    </delete>
 </mapper>
