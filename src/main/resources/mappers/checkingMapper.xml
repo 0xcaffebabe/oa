@@ -12,7 +12,12 @@
         typeHandler="wang.ismy.oa.dao.handler.CheckingTypeHandler"/>
 
     </resultMap>
-
+    <sql id="head">
+        SELECT tb_checking.checking_id,
+            tb_checking.checking_type,
+            tb_checking.checking_date
+        FROM tb_checking
+    </sql>
     <insert id="addCheckingRecord" parameterType="int">
         INSERT INTO tb_checking(checking_date, checking_type, checking_user, checking_create_time)
                 VALUES(NOW(),${checkingType.checkingType},
@@ -31,6 +36,24 @@
             tb_checking.checking_date
         FROM tb_checking WHERE checking_user=#{userId}
         ORDER BY tb_checking.checking_create_time DESC LIMIT 6
+    </select>
+    <select id="getCheckingTimeByUserId" parameterType="int" resultType="int">
+        SELECT COUNT(tb_checking.checking_id) FROM tb_checking
+        WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= DATE(tb_checking.checking_date)
+        AND tb_checking.checking_user=#{userId}
+    </select>
+    <select id="getCheckingListByUserId" resultMap="CheckingMap">
+        SELECT tb_checking.checking_id,
+            tb_checking.checking_type,
+            tb_checking.checking_date
+        FROM tb_checking
+        WHERE DATE_SUB(CURDATE(), INTERVAL 30 DAY) &lt;= DATE(tb_checking.checking_date)
+        AND tb_checking.checking_user=#{userId}
+    </select>
+    <select id="getCheckingListByUserIdByPage" resultMap="CheckingMap">
+        <include refid="head"/>
+        WHERE tb_checking.checking_user=#{userId}
+        ORDER BY tb_checking.checking_date DESC
     </select>
 
 </mapper>

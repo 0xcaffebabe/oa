@@ -1,7 +1,9 @@
 package wang.ismy.oa.service;
 
 import wang.ismy.oa.dto.CheckingDto;
+import wang.ismy.oa.dto.CheckingInfo;
 import wang.ismy.oa.dto.CheckingTimeDto;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.entity.Checking;
 import wang.ismy.oa.enums.CheckingEnum;
 import wang.ismy.oa.exception.NotLoginException;
@@ -21,4 +23,15 @@ public interface CheckingService {
     LocalDateTime getCurrentDate();
 
     List<Checking> getSelfRecentCheckingList() throws NotLoginException;
+
+    CheckingInfo getCheckingInfoByUserId(Integer userId);
+
+    CheckingInfo getCurrentUserCheckingInfo();
+
+    List<Checking> getCheckingListByUserIdByPage(Integer userId, Page page);
+
+
+
+
+
 }

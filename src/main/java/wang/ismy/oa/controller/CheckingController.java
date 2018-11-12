@@ -6,6 +6,7 @@ import wang.ismy.oa.annotations.LoginOnly;
 import wang.ismy.oa.common.DataDictionary;
 import wang.ismy.oa.dto.CheckingDto;
 import wang.ismy.oa.dto.DutyStateDTO;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.dto.Result;
 import wang.ismy.oa.entity.User;
 import wang.ismy.oa.enums.CheckingEnum;
@@ -25,6 +26,9 @@ public class CheckingController {
 
     @Autowired
     private CheckingService checkingService;
+
+    @Autowired
+    private UserService userService;
     /*
     * 打卡接口
     * */
@@ -95,6 +99,32 @@ public class CheckingController {
     public Object getSelfRecentCheckingList() throws NotLoginException {
 
         return new Result<>(ResultState.SUCCESS,checkingService.getSelfRecentCheckingList());
+    }
+
+    /*
+    * 获取当前登录用户考勤信息
+    */
+    @GetMapping("/info")
+    @LoginOnly
+    public Object getCheckingInfoBySelf(){
+        User user = userService.getCurrentUser();
+
+        return new Result<>(ResultState.SUCCESS,checkingService.getCheckingInfoByUserId(user.getUserId()));
+    }
+
+    /*
+    * 获取当前登录用户考勤记录
+    */
+    @GetMapping("/list")
+    @LoginOnly
+    public Object getCheckingListBySelf(@RequestParam("page") Integer pageNumber,@RequestParam("length") Integer length){
+        Page page=new Page(pageNumber,length);
+
+        User user = userService.getCurrentUser();
+
+        return new Result<>(ResultState.SUCCESS,checkingService.getCheckingListByUserIdByPage(user.getUserId(),page));
+
+
     }
 
 }
