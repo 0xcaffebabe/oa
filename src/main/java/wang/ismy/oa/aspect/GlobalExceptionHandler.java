@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
         try {
             return joinPoint.proceed(joinPoint.getArgs());
         } catch (Throwable throwable) {
-
+            throwable.printStackTrace();
             return new Result<>(ResultState.ERROR,throwable.getMessage()+":"+throwable.toString());
         }
     }

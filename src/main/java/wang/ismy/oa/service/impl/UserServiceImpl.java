@@ -35,12 +35,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(Integer userId) {
-        return null;
+        return userDao.getUserByUserId(userId);
     }
 
     @Override
     public User getCurrentUser() throws NotLoginException {
         ServletRequestAttributes attr = (ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
+
         HttpSession session=attr.getRequest().getSession(true);
 
         Object user=session.getAttribute("user");

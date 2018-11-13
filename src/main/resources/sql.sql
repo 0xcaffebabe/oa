@@ -52,12 +52,24 @@ CREATE TABLE tb_event(
 
 )ENGINE=InnoDB CHARSET =utf8mb4;
 
-创建考勤表
+# 创建考勤表
 CREATE TABLE tb_checking(
   checking_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   checking_date DATETIME DEFAULT NOW(),
   checking_type BOOL  NOT NULL ,
   checking_user INT NOT NULL ,
   checking_create_time DATETIME DEFAULT NOW()
+
+)ENGINE=InnoDB CHARSET =utf8mb4;
+
+# 创建消息表
+CREATE TABLE tb_message(
+  message_id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  message_to INT NOT NULL,
+  message_from INT NOT NULL,
+  message_content TEXT NOT NULL,
+  has_read BOOL NOT NULL DEFAULT 0,
+  create_time DATETIME DEFAULT NOW(),
+  last_edit_time DATETIME DEFAULT NOW()
 
 )ENGINE=InnoDB CHARSET =utf8mb4;

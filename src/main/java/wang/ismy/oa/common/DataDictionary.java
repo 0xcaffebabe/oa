@@ -21,7 +21,8 @@ public enum  DataDictionary {
     UPDATE_FAIL("更新失败"),
     SAVE_SUCCESS("保存成功"),
     SAVE_FAIL("保存失败"),
-    PARAM_ERROR("参数错误");
+    PARAM_ERROR("参数错误"),
+    USER_NOT_EXIST("用户不存在");
 
     private Object data;
 
