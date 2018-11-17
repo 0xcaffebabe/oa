@@ -21,6 +21,7 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,18 @@ public class CommunicationServiceImpl implements CommunicationService {
     /*在线用户映射表*/
     private Map<WebSocketSession,Integer> onlineUserMapping = new ConcurrentHashMap<>();
 
+    /*反向在线用户映射表*/
+    private Map<Integer,WebSocketSession> reverseOnlineUserMapping=new ConcurrentHashMap<>();
+
+    /*ID与用户信息映射表*/
+    private Map<Integer,User> userIdMapping = new ConcurrentHashMap<>();
+
     @Override
     public boolean online(Integer userId) {
         return reverseOnlineUserMapping.containsKey(userId);
     }
 
-    /*反向在线用户映射表*/
-    private Map<Integer,WebSocketSession> reverseOnlineUserMapping=new ConcurrentHashMap<>();
+
 
     @Autowired
     private UserService userService;
@@ -59,19 +65,19 @@ public class CommunicationServiceImpl implements CommunicationService {
 
 
             if(user==null){
-                System.err.println("未登录");
+
                 throw new NotLoginException("未登录");
             }
             onlineUserMapping.put(session,user.getUserId());
 
+            userIdMapping.put(user.getUserId(),user);
+
             reverseOnlineUserMapping.put(user.getUserId(),session);
 
-            System.err.println("当前所有用户:");
-            System.err.println(reverseOnlineUserMapping);
+
         }else{
 
-            System.err.println("未登录1");
-            System.err.println(reverseOnlineUserMapping);
+
         }
 
 
@@ -87,8 +93,7 @@ public class CommunicationServiceImpl implements CommunicationService {
             reverseOnlineUserMapping.remove(userId);
         }
 
-        System.err.println("当前所有用户:");
-        System.err.println(reverseOnlineUserMapping);
+
     }
 
     @Override
@@ -96,7 +101,7 @@ public class CommunicationServiceImpl implements CommunicationService {
 
         User user =new User();
 
-        user.setUserId(onlineUserMapping.get(session));
+        user=userIdMapping.get(onlineUserMapping.get(session));
 
         User toUser=userService.getUser(messageDto.getMessageTo());
 
@@ -113,6 +118,17 @@ public class CommunicationServiceImpl implements CommunicationService {
 
         messageService.sendMessage(message);
 
+    }
+
+    @Override
+    public List<User> getOnlineUserList() {
+        User user = userService.getCurrentUser();
+
+        List<User> users=new ArrayList<>();
+        for(Integer key :reverseOnlineUserMapping.keySet()){
+            users.add(userIdMapping.get(key));
+        }
+        return users;
     }
 
     @Override

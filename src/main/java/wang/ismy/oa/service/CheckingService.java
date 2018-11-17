@@ -1,5 +1,6 @@
 package wang.ismy.oa.service;
 
+import org.springframework.http.ResponseEntity;
 import wang.ismy.oa.dto.CheckingDto;
 import wang.ismy.oa.dto.CheckingInfo;
 import wang.ismy.oa.dto.CheckingTimeDto;
@@ -30,7 +31,9 @@ public interface CheckingService {
 
     List<Checking> getCheckingListByUserIdByPage(Integer userId, Page page);
 
+    List<Checking> getStaffCheckingListByPage(Integer staffId,Page page);
 
+    ResponseEntity<byte[]> exportStaffCheckingListByPage(Integer staffId,Page page);
 
 
 

@@ -4,10 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wang.ismy.oa.common.DataDictionary;
 import wang.ismy.oa.dao.MessageDao;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.entity.Message;
+import wang.ismy.oa.entity.User;
+import wang.ismy.oa.exception.UserNotFoundException;
 import wang.ismy.oa.service.CommunicationService;
 import wang.ismy.oa.service.MessageService;
+import wang.ismy.oa.service.UserService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -25,6 +30,9 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     private CommunicationService communicationService;
+
+    @Autowired
+    private UserService userService;
 
     @Override
     public void sendMessage(Message message) {
@@ -50,6 +58,21 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> pullCurrentUserAllMessage() {
         return null;
+    }
+
+    @Override
+    public List<Message> getCurrentMessageListByFromByPage(Integer fromUser, Page page) {
+        User user = userService.getCurrentUser();
+
+        User userFrom = userService.getUser(fromUser);
+
+        if(userFrom == null){
+            throw new UserNotFoundException(DataDictionary.USER_NOT_EXIST.toString());
+        }
+
+
+        List<Message> messageList = messageDao.getMessageListByPage(user.getUserId(),fromUser,page);
+        return messageList;
     }
 
     /*

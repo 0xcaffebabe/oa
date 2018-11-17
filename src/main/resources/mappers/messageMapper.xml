@@ -4,10 +4,40 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="wang.ismy.oa.dao.MessageDao">
-
+    <resultMap id="MessageMap" type="wang.ismy.oa.entity.Message">
+        <id property="messageId" column="message_id"/>
+        <result property="messageContent" column="message_content"/>
+        <result property="createTime" column="create_time"/>
+        <association property="messageTo" javaType="wang.ismy.oa.entity.User">
+            <id property="userId" column="message_to"/>
+            <association property="userInfo" javaType="wang.ismy.oa.entity.UserInfo">
+                <result property="fullName" column="to_full_name"/>
+            </association>
+        </association>
+        <association property="messageFrom" javaType="wang.ismy.oa.entity.User">
+            <id property="userId" column="message_from"/>
+            <association property="userInfo" javaType="wang.ismy.oa.entity.UserInfo">
+                <result property="fullName" column="from_full_name"/>
+            </association>
+        </association>
+    </resultMap>
 
     <insert id="saveMessage" parameterType="wang.ismy.oa.entity.Message">
         INSERT INTO tb_message(message_to, message_from, message_content, has_read, create_time, last_edit_time)
                 VALUES(#{messageTo.userId},#{messageFrom.userId},#{messageContent},#{hasRead},NOW(),NOW())
     </insert>
+    <select id="getMessageListByPage" resultType="wang.ismy.oa.entity.Message" resultMap="MessageMap">
+        SELECT tb_message.message_id,
+            tb_message.message_content,
+            tb_message.create_time,
+            tb_message.message_to,
+            tb_message.message_from,
+            (SELECT tb_user_info.full_name FROM tb_user_info,tb_user
+            WHERE tb_user.user_id=#{fromUser} AND tb_user.user_info=tb_user_info.user_info_id) from_full_name,
+            (SELECT tb_user_info.full_name FROM tb_user_info,tb_user
+            WHERE tb_user.user_id=#{userId} AND tb_user.user_info=tb_user_info.user_info_id) to_full_name
+            FROM tb_message
+        WHERE message_to=#{userId} AND message_from=#{fromUser}
+        ORDER BY create_time DESC
+    </select>
 </mapper>

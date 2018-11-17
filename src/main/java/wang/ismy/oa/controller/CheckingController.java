@@ -127,4 +127,25 @@ public class CheckingController {
 
     }
 
+    /*
+    * 获取当前登录用户的某个下级考勤记录
+    */
+    @GetMapping("/list/{staffId}")
+    @LoginOnly
+    public Object getStaffCheckingListByPage(@PathVariable("staffId") Integer staffId,@RequestParam("page") Integer pageNumber,
+                                             @RequestParam("length") Integer length){
+        Page page = new Page(pageNumber,length);
+
+        return new Result<>(ResultState.SUCCESS,checkingService.getStaffCheckingListByPage(staffId,page));
+    }
+
+    @GetMapping("/list/export/{staffId}")
+    @LoginOnly
+    public Object exportStaffCheckingListByPage(@PathVariable("staffId") Integer staffId,@RequestParam("page") Integer pageNumber,
+                                             @RequestParam("length") Integer length){
+        Page page = new Page(pageNumber,length);
+
+        return checkingService.exportStaffCheckingListByPage(staffId,page);
+    }
+
 }

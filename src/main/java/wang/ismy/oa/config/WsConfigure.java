@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import wang.ismy.oa.controller.CommunicationSocketController;
 
-import wang.ismy.oa.controller.CommunicationController;
 
 @Configuration
 @EnableWebSocket
@@ -20,9 +20,9 @@ public class WsConfigure implements WebSocketConfigurer
     }
 
     @Bean
-    public CommunicationController myHandler()
+    public CommunicationSocketController myHandler()
     {
-        return new CommunicationController();
+        return new CommunicationSocketController();
     }
 }
 

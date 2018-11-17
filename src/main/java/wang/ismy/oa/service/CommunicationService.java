@@ -3,6 +3,9 @@ package wang.ismy.oa.service;
 import org.springframework.web.socket.WebSocketSession;
 import wang.ismy.oa.dto.MessageDto;
 import wang.ismy.oa.entity.Message;
+import wang.ismy.oa.entity.User;
+
+import java.util.List;
 
 public interface CommunicationService {
 
@@ -17,4 +20,6 @@ public interface CommunicationService {
 
     /*推送消息*/
     void pushMessage(Message message);
+
+    List<User> getOnlineUserList();
 }

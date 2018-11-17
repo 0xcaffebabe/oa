@@ -19,4 +19,13 @@ public class UserInfoDaoTest extends BaseTest {
 
         System.err.println(userInfo);
     }
+
+    /*
+    * admin
+    * */
+    @Test
+    public void userProfile(){
+
+        assertEquals(1,userInfoDao.updateUserProfile(3,"http://123"));
+    }
 }

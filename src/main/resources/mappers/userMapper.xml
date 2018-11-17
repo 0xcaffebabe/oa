@@ -62,4 +62,8 @@
         AND tb_user_info.user_info_id=tb_user.user_info
         AND tb_user_info.department=tb_department.department_id
     </select>
+    <select id="getStaffListByPage" resultMap="UserMap">
+        <include refid="GetUserHead"/>
+        WHERE tb_user.user_info=tb_user_info.user_info_id AND tb_user_info.leader=#{userId} ORDER BY tb_user.create_time DESC
+    </select>
 </mapper>

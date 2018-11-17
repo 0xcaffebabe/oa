@@ -20,6 +20,13 @@
                 <result property="departmentDesc" column="department_desc"/>
             </association>
     </resultMap>
+    <update id="updateUserProfile" >
+        UPDATE tb_user_info
+        SET tb_user_info.user_profile=#{imgUrl}
+        WHERE tb_user_info.user_info_id IN (
+                SELECT tb_user.user_info FROM tb_user WHERE tb_user.user_id=#{userId}
+        )
+    </update>
 
     <select id="getUserInfoByUserId" resultMap="UserInfoMap" parameterType="int">
         SELECT

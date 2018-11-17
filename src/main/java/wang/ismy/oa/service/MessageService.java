@@ -1,5 +1,6 @@
 package wang.ismy.oa.service;
 
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.entity.Message;
 import wang.ismy.oa.entity.User;
 
@@ -21,6 +22,8 @@ public interface MessageService {
     * 向某个用户推送消息
     */
     void pushMessageToUser(Message message);
+
+    List<Message> getCurrentMessageListByFromByPage(Integer fromUser, Page page);
 
 
 

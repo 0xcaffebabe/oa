@@ -7,12 +7,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import wang.ismy.oa.common.DataDictionary;
 import wang.ismy.oa.dao.UserDao;
+import wang.ismy.oa.dto.Page;
 import wang.ismy.oa.entity.User;
 import wang.ismy.oa.exception.NotLoginException;
 import wang.ismy.oa.service.UserService;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,5 +55,10 @@ public class UserServiceImpl implements UserService {
         }
         throw new NotLoginException(DataDictionary.NOT_LOGIN.toString());
 
+    }
+
+    @Override
+    public List<User> getStaffListByPage(User currentUser, Page page) {
+        return userDao.getStaffListByPage(currentUser.getUserId(),page);
     }
 }

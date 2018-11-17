@@ -1,73 +1,24 @@
 package wang.ismy.oa.controller;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-import wang.ismy.oa.dto.MessageDto;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import wang.ismy.oa.annotations.LoginOnly;
+import wang.ismy.oa.dto.Result;
+import wang.ismy.oa.enums.ResultState;
 import wang.ismy.oa.service.CommunicationService;
-import wang.ismy.oa.service.MessageService;
 
-@Component
-public class CommunicationController extends TextWebSocketHandler {
+@RestController
+@RequestMapping("/communication")
+public class CommunicationController {
 
     @Autowired
     private CommunicationService communicationService;
 
-
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        super.afterConnectionClosed(session, status);
-        System.out.println("close....");
-        communicationService.removeUser(session);
+    @GetMapping("/onlineUser")
+    @LoginOnly
+    public Object getOnlineUserList(){
+        return new Result<>(ResultState.SUCCESS,communicationService.getOnlineUserList());
     }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        super.afterConnectionEstablished(session);
-        System.out.println("建立新的会话");
-
-    }
-
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
-        if(message.getPayload().equals("heart")){
-
-            return;
-        }
-
-        if(!message.getPayload().contains("{")){
-            System.err.println("jieshoudao:"+message.getPayload());
-            communicationService.addUser(session,message.getPayload());
-
-        }else{
-            Gson gson=new Gson();
-
-            MessageDto dto=gson.fromJson(message.getPayload(),MessageDto.class);
-
-            System.out.println("收到一条客户端消息：" + dto);
-            communicationService.sendMessage(dto,session);
-
-
-        }
-
-    }
-
-    @Override
-    public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        super.handleMessage(session, message);
-    }
-
-    @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        super.handleTransportError(session, exception);
-    }
-
-
 }

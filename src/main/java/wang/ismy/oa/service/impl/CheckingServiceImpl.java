@@ -1,6 +1,15 @@
 package wang.ismy.oa.service.impl;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import wang.ismy.oa.common.DataDictionary;
 import wang.ismy.oa.common.HolidayValid;
@@ -15,11 +24,14 @@ import wang.ismy.oa.enums.CheckingEnum;
 import wang.ismy.oa.enums.CheckingTimeEnum;
 import wang.ismy.oa.exception.InvalidCheckingTimeException;
 import wang.ismy.oa.exception.NotLoginException;
+import wang.ismy.oa.exception.PermissionDeniedException;
 import wang.ismy.oa.exception.RepeatCheckingException;
 import wang.ismy.oa.service.CheckingService;
 import wang.ismy.oa.service.UserService;
 import wang.ismy.oa.util.TimeUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -129,6 +141,45 @@ public class CheckingServiceImpl implements CheckingService {
         return checkingDao.getCheckingListByUserIdByPage(userId,page);
     }
 
+    @Override
+    public List<Checking> getStaffCheckingListByPage(Integer staffId, Page page) {
+        User currentUser = userService.getCurrentUser();
+
+        User staff = userService.getUser(staffId);
+
+        if(staff.getUserInfo().getLeader() == null){
+            throw new PermissionDeniedException(DataDictionary.PERMISSION_DENIED.toString());
+        }
+
+        if(staff.getUserInfo().getLeader().equals(currentUser)){
+
+        }else{
+            throw new PermissionDeniedException(DataDictionary.PERMISSION_DENIED.toString());
+        }
+
+
+        return checkingDao.getCheckingListByUserIdByPage(staffId,page);
+    }
+
+    @Override
+    public ResponseEntity<byte[]> exportStaffCheckingListByPage(Integer staffId, Page page) {
+
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDispositionFormData("fileName", "export.xls");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+
+
+        try {
+            return new ResponseEntity<byte[]>(exportStaffCheckingList(staffId,page),headers,HttpStatus.OK);
+        } catch (IOException e) {
+            throw new PermissionDeniedException(DataDictionary.PERMISSION_DENIED.toString());
+        }
+
+
+    }
+
     /*计算最近一个月用户考勤率
     *
     * 计算公式:最近一个月总打卡次数/应打卡次数
@@ -226,6 +277,37 @@ public class CheckingServiceImpl implements CheckingService {
         return checkingDao.getCheckingListByUserId(userId);
     }
 
+    private byte[] exportStaffCheckingList(Integer staffId,Page page) throws IOException {
 
+        List<Checking> checkingList = getStaffCheckingListByPage(staffId,page);
+
+        //web对象
+        HSSFWorkbook wb = new HSSFWorkbook();
+        //创建表头等
+        HSSFSheet sheet = wb.createSheet("考勤记录");
+
+        HSSFRow row = sheet.createRow(0);
+        HSSFCell cell2 = row.createCell(0);
+        cell2.setCellValue("打卡时间");
+        HSSFCell cell3 = row.createCell(1);
+        cell3.setCellValue("类型");
+        for(int i = 0;i<checkingList.size();i++){
+            //创建行
+            row = sheet.createRow(i+1);
+            HSSFCell cell=row.createCell(0);
+            cell.setCellValue(checkingList.get(i).getCheckingDate().toString());
+            cell=row.createCell(1);
+
+            cell.setCellValue(checkingList.get(i).getCheckingType()==CheckingEnum.OFF_DUTY?"下班":"上班");
+
+        }
+        ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+
+        wb.write(outputStream);
+
+        return outputStream.toByteArray();
+
+
+    }
 
 }
